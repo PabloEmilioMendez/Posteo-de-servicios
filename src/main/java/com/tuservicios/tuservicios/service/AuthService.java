@@ -4,6 +4,7 @@ import com.tuservicios.tuservicios.model.User;
 import com.tuservicios.tuservicios.payload.request.LoginRequest;
 import com.tuservicios.tuservicios.payload.request.SingupRequest;
 import com.tuservicios.tuservicios.repository.UserRepository;
+import com.tuservicios.tuservicios.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,13 +17,16 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     @Autowired
-    UserRepository userRepository;
+    public UserRepository userRepository;
 
     @Autowired
     PasswordEncoder encoder;
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     public User registerUser(SingupRequest singupRequest){
         //Verificamos si el nombre de usuario ya existe
@@ -38,16 +42,19 @@ public class AuthService {
         user.setUsername(singupRequest.getUsername());
         user.setEmail(singupRequest.getEmail());
         //Encriptar la contreseña y guardarla
+
         String encodedPassword = encoder.encode(singupRequest.getPassword());
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     };
 
-    public Authentication authenticateUser(LoginRequest loginRequest){
+    public String authenticateUser(LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return  authentication;
-    }
+        return jwtUtils.generateJwtToken(authentication);
+    };
+
+
 }

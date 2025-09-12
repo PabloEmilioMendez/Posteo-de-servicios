@@ -1,13 +1,14 @@
 package com.tuservicios.tuservicios.controller;
 
+import com.tuservicios.tuservicios.model.User;
 import com.tuservicios.tuservicios.payload.request.LoginRequest;
 import com.tuservicios.tuservicios.payload.request.SingupRequest;
 import com.tuservicios.tuservicios.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,8 +31,10 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authencateUser(@Valid @RequestBody LoginRequest loginRequest){
         try {
-            Authentication authentication = authService.authenticateUser(loginRequest);
-            // Se retorna el JWT
+            String jwt = authService.authenticateUser(loginRequest);
+            // Si la autenticaion del usuario es exitosa, obten los datos del usario
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User user = authService.userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             return  ResponseEntity.ok("Usuario autenticado exitosamente");
         } catch (Exception e) {
             return  ResponseEntity.badRequest().body("Credenciales de usuario no validas");
