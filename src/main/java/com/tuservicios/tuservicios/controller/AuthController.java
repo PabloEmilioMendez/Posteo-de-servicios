@@ -3,10 +3,13 @@ package com.tuservicios.tuservicios.controller;
 import com.tuservicios.tuservicios.model.User;
 import com.tuservicios.tuservicios.payload.request.LoginRequest;
 import com.tuservicios.tuservicios.payload.request.SingupRequest;
+import com.tuservicios.tuservicios.payload.response.JwtResponse;
 import com.tuservicios.tuservicios.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -29,16 +32,21 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authencateUser(@Valid @RequestBody LoginRequest loginRequest){
-        try {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+
             String jwt = authService.authenticateUser(loginRequest);
-            // Si la autenticaion del usuario es exitosa, obten los datos del usario
+            // Si la autenticacion del usuario es exitosa, obten los datos del usuario
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User user = authService.userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            return  ResponseEntity.ok("Usuario autenticado exitosamente");
-        } catch (Exception e) {
-            return  ResponseEntity.badRequest().body("Credenciales de usuario no validas");
-        }
+            User user = authService.userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+
+            return ResponseEntity.ok(new JwtResponse(jwt, user.getId(), user.getUsername(), user.getEmail()));
+
+    }
+
+    @GetMapping("/api/test/authenticated")
+    @PreAuthorize("isAuthenticated()")
+    public String testAuthenticated(){
+        return "Has accedido a un recurso protegido";
     }
 
 }

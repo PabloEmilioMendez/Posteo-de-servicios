@@ -4,12 +4,13 @@ import com.tuservicios.tuservicios.model.User;
 import com.tuservicios.tuservicios.payload.request.LoginRequest;
 import com.tuservicios.tuservicios.payload.request.SingupRequest;
 import com.tuservicios.tuservicios.repository.UserRepository;
-import com.tuservicios.tuservicios.security.JwtUtils;
+import com.tuservicios.tuservicios.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +49,19 @@ public class AuthService {
         return userRepository.save(user);
     };
 
-    public String authenticateUser(LoginRequest loginRequest){
+    // AuthService.java
+// Asegúrate de importar la clase UserDetails
+
+
+    public String authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
         return jwtUtils.generateJwtToken(authentication);
-    };
+    }
 
 
 }
