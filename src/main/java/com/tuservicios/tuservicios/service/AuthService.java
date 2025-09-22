@@ -3,6 +3,7 @@ package com.tuservicios.tuservicios.service;
 import com.tuservicios.tuservicios.model.User;
 import com.tuservicios.tuservicios.payload.request.LoginRequest;
 import com.tuservicios.tuservicios.payload.request.SingupRequest;
+import com.tuservicios.tuservicios.payload.response.JwtResponse;
 import com.tuservicios.tuservicios.repository.UserRepository;
 import com.tuservicios.tuservicios.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +54,25 @@ public class AuthService {
 // Asegúrate de importar la clase UserDetails
 
 
-    public String authenticateUser(LoginRequest loginRequest) {
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
+        //Autentica al usuario usando el AuthenticationManager
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        //Establece la autenticacion en el cotexto de seguridad
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        //Genera el token JWT
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        //Obtiene los detalles del usuario autenticado
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        return jwtUtils.generateJwtToken(authentication);
+        //Busca al usuario en la base de datos para obteer el ID y el email
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(()-> new RuntimeException("Error: Usuario no encontrado."));
+
+        return new JwtResponse(jwt, user.getId(), user.getUsername(), user.getEmail());
     }
 
 

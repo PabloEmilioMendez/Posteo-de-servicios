@@ -1,8 +1,13 @@
 package com.tuservicios.tuservicios.security.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,18 +46,19 @@ public class JwtUtils {
                 .verifyWith(key())
                 .build()
                 .parseSignedClaims(token)
-                .getBody()
+                .getPayload()
                 .getSubject();
     }
-
 
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser()
                     .verifyWith(key())
                     .build()
-                    .parse(authToken);
+                    .parseSignedClaims(authToken);
             return true;
+        } catch (SignatureException e) {
+            logger.error("Firma JWT no válida: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Token JWT no válido: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
