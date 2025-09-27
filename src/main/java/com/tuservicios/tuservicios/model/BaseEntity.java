@@ -29,7 +29,7 @@ public abstract class BaseEntity {
         this.fechaDeModificacion = LocalDateTime.now();
     }
 
-    @PrePersist
+    @PreUpdate
     protected  void onUdpate(){
         this.fechaDeModificacion = LocalDateTime.now();
     }

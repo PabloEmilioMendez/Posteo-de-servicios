@@ -43,6 +43,7 @@ public class AuthService {
         User user = new User();
         user.setUsername(singupRequest.getUsername());
         user.setEmail(singupRequest.getEmail());
+        user.setPhoneNumber(singupRequest.getPhoneNumber());
         //Encriptar la contreseña y guardarla
 
         String encodedPassword = encoder.encode(singupRequest.getPassword());
@@ -72,7 +73,7 @@ public class AuthService {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(()-> new RuntimeException("Error: Usuario no encontrado."));
 
-        return new JwtResponse(jwt, user.getId(), user.getUsername(), user.getEmail());
+        return new JwtResponse(jwt, user.getId(), user.getUsername(), user.getEmail(), user.getPhoneNumber());
     }
 
 
