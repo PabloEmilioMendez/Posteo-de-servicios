@@ -9,18 +9,17 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Table(name = "departamento")
+@Table(name = "localidad")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Departemento extends BaseEntity{
-
+public class Localidad extends BaseEntity{
 
     @NotBlank
     @Size(max = 100)
-    private  String nombre;
+    private String name;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "pais_id", nullable = false)
-    private Pais pais;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ciudad_id", nullable = false)
+    private Ciudad ciudad;
 }

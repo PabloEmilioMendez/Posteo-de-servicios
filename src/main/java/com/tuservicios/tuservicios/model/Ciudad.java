@@ -7,20 +7,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
-@Table(name = "departamento")
+@Table(name = "ciudad")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Departemento extends BaseEntity{
-
+public class Ciudad extends BaseEntity{
 
     @NotBlank
     @Size(max = 100)
-    private  String nombre;
+    private String nombre;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name = "pais_id", nullable = false)
-    private Pais pais;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departamento_id", nullable = false)
+    private Departemento departemento;
+
 }
