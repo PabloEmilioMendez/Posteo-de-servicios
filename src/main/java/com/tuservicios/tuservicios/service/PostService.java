@@ -1,6 +1,7 @@
 package com.tuservicios.tuservicios.service;
 
 import com.tuservicios.tuservicios.model.*;
+import com.tuservicios.tuservicios.payload.request.PostRequest;
 import com.tuservicios.tuservicios.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
