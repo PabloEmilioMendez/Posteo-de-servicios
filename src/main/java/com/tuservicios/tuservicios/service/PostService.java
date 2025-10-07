@@ -3,10 +3,10 @@ package com.tuservicios.tuservicios.service;
 import com.tuservicios.tuservicios.model.*;
 import com.tuservicios.tuservicios.payload.request.PostRequest;
 import com.tuservicios.tuservicios.repository.*;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -46,19 +46,19 @@ public class PostService {
         Categoria categoria = categoriaRepository.findById(postRequest.getCategoriaId())
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria no valida"));
 
-        //Obtener Localidda por id
-        Localidad localidad = localidadRepository.findById(postRequest.getLocalidad())
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Localidad principal"));
+        //Obtener Localidad por id
+        Localidad localidad = localidadRepository.findById(postRequest.getLocalidadId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Localidad principal no encontrada"));
 
         //Obtener servicios de muchos a muchos
-        Set<Servicio> servicios = postRequest.getServicioIds().stream()
-                .map(id -> localidadRepository.findById(id).orElseThrow(
+        Set<Servicio> servicios = postRequest.getServiciosId().stream()
+                .map(id -> servicioRepository.findById(id).orElseThrow(
                         ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servicio con ID " + id + " no encontrado." )))
                         .collect(Collectors.toSet());
 
         //Obtener localidades de Domicilio
-        Set<Localidad> localidadesDomicilio = postRequest.getLocalidadesDomicilioIds().stream()
-                .mao(id -> localidadRepository.findById(id).orElseThrow(
+        Set<Localidad> localidadesDomicilio = postRequest.getDeliveryLocalidadIds().stream()
+                .map(id -> localidadRepository.findById(id).orElseThrow(
                         ()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Localidad de domicilio con ID " + id + " no encontrasa")))
                         .collect(Collectors.toSet());
 
@@ -106,7 +106,7 @@ public class PostService {
 
     //Update Post
     @Transactional
-    public Post updatePost(Long postId, PostRequest phone){
+    public Post updatePost(Long postId, PostRequest postRequest){
         Post existingPost = postRepository.findById(postId).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post no encontrado"));
 
         //Logica de actualizacion de relaciones
@@ -119,33 +119,33 @@ public class PostService {
         }
 
         //Actualizar Localidad Principal
-        if (!existingPost.getLocalidad().getId().equals(postRequest.getLocalodadID())){
+        if (!existingPost.getLocalidad().getId().equals(postRequest.getLocalidadId())){
             Localidad newLocalidad = localidadRepository.findById(postRequest.getLocalidadId())
                     .orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nueva localidad no valida"));
             existingPost.setLocalidad(newLocalidad);
         }
 
         existingPost.getServicios().clear();
-        postRequest.getServicioIds().stream()
+        postRequest.getServiciosId().stream()
                 .map(id -> servicioRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.BAD_REQUEST,"Servicio con ID " + id + " no encontrado")))
                 .forEach(existingPost.getServicios()::add);
 
-        existingPost.getDeliveryLocations().clear();
+        existingPost.getDomiciliosLocations().clear();
         postRequest.getDeliveryLocalidadIds().stream()
                 .map(id -> localidadRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Localidad con ID " + id + " no encontrada.")))
-                .forEach(existingPost.getDeliveryLocations()::add);
+                .forEach(existingPost.getDomiciliosLocations()::add);
 
         // Mapeo y actualización de campos simples
         existingPost.setTitle(postRequest.getTitle());
-        existingPost.setDescription(postRequest.getDescription());
+        existingPost.setDescripcion(postRequest.getDescripcion());
         existingPost.setPhone(postRequest.getPhone());
         existingPost.setAge(postRequest.getAge());
-        existingPost.setContactOptions(postRequest.getContactOptions());
+        existingPost.setContactOpcions(postRequest.getContactOptions());
         existingPost.setWebsiteLink(postRequest.getWebsiteLink());
         existingPost.setMapAddress(postRequest.getMapAddress());
-        existingPost.setImageUrls(postRequest.getImageUrls());
-        existingPost.setVideoUrls(postRequest.getVideoUrls());
-        existingPost.setAdultContentAccepted(postRequest.getAdultContentAccepted());
+        existingPost.setImageUrls(postRequest.getImageUrl());
+        existingPost.setVideoUrls(postRequest.getVideoUrl());
+        existingPost.setAdultoContemtAcceptde(postRequest.getAdultContentAccepted());
 
         return postRepository.save(existingPost);
 
