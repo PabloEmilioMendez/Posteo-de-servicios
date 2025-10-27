@@ -41,11 +41,16 @@ public class CategoriaService {
     public void  deleteCategoria(long id){
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND," Categoria no encontrada con ID: "+id));
-
                 // logical arase
                 categoria.setActivo(false);
                 categoriaRepository.save(categoria);
+    }
 
-
+    //Activar categori
+    @Transactional
+    public void activeCategorie(Long id){
+        Categoria categoria = categoriaRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Categoria no encontrada con ID: " + id));
+        categoria.setActivo(true);
+        categoriaRepository.save(categoria);
     }
 }

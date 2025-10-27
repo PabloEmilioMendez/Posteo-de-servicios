@@ -24,7 +24,7 @@ public class CategoriaController {
 
     //Create Category
     @PostMapping
-    @PreAuthorize("isAutheticated()") // Only authenticated users can create
+    //@PreAuthorize("isAutheticated()") // Only authenticated users can create
     public ResponseEntity<Categoria> createCategoria(@Valid @RequestBody Categoria categoria){
         Categoria newCategory = categoriaService.saveCategoria(categoria);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED); // Returns the created categoria with code 201 CREATED
@@ -56,5 +56,10 @@ public class CategoriaController {
         categoriaService.deleteCategoria(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
+    //
+    @PutMapping("/active/{id}")
+    public ResponseEntity<HttpStatus> activeCategorie(@PathVariable Long id){
+        categoriaService.activeCategorie(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
