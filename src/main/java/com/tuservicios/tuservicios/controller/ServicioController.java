@@ -20,6 +20,7 @@ public class ServicioController {
     @Autowired
     public ServicioService servicioService;
 
+    //Get all servicios active
     @GetMapping
     public List<Servicio> findAllActive(){
         return servicioService.findAllActive();
