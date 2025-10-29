@@ -25,8 +25,9 @@ public class CategoriaController {
     //Create Category
     @PostMapping
     //@PreAuthorize("isAutheticated()") // Only authenticated users can create
-    public ResponseEntity<Categoria> createCategoria(@Valid @RequestBody Categoria categoria){
-        Categoria newCategory = categoriaService.saveCategoria(categoria);
+    public ResponseEntity<Categoria> createCategoria(@Valid @RequestBody CategoriaRequest categoriaRequest){
+        Categoria categoria = new Categoria();
+        Categoria newCategory = categoriaService.saveCategoria(categoriaRequest,categoria);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED); // Returns the created categoria with code 201 CREATED
     }
     //READ all active categories (GET /api/categories
@@ -41,14 +42,12 @@ public class CategoriaController {
     }
     //UPDATE (PUT /api/categorias/{id})
     @PutMapping("/{id}")
-    public Categoria updateCategoria(@PathVariable Long id, @Valid @RequestBody Categoria categoriaDetails){
-        Categoria existingCategiria = categoriaService.findById(id); //Busca y lanza 404 si no existe/activa
+    public ResponseEntity<Categoria> updateCategoria(@PathVariable Long id, @Valid @RequestBody CategoriaRequest categoriaRequest){
 
-        //Aplicamos las actualizaciones
-        existingCategiria.setNombre(categoriaDetails.getNombre());
-        existingCategiria.setDescripcion(categoriaDetails.getDescripcion());
-        //Guarda la catgoria actualizada
-        return  categoriaService.saveCategoria(existingCategiria);
+        Categoria existingCategiria = categoriaService.findById(id); //Busca y lanza 404 si no existe/activa
+        Categoria updatedCategoria = categoriaService.saveCategoria(categoriaRequest, existingCategiria);
+
+        return  new ResponseEntity<>(updatedCategoria, HttpStatus.OK);
     }
     //DELETE (DELETE /api/categorias/{id}
     @DeleteMapping("/{id}")

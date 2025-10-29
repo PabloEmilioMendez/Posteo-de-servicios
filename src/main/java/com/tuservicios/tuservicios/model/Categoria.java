@@ -15,13 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Categoria extends BaseEntity{
-
     @NotBlank
     @Size(max = 100)
     private String nombre;
 
     @Size(max = 250)
+    @NotBlank
     private String descripcion;
-
-
 }

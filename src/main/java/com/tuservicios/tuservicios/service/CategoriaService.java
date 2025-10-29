@@ -1,6 +1,7 @@
 package com.tuservicios.tuservicios.service;
 
 import com.tuservicios.tuservicios.model.Categoria;
+import com.tuservicios.tuservicios.payload.request.CategoriaRequest;
 import com.tuservicios.tuservicios.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,9 @@ public class CategoriaService {
 
     //Create / Update
     @Transactional
-    public Categoria saveCategoria(Categoria categoria){
+    public Categoria saveCategoria(CategoriaRequest categoriaRequest, Categoria categoria){
+        categoria.setNombre(categoriaRequest.getNombre());
+        categoria.setDescripcion(categoriaRequest.getDescripcion());
         return categoriaRepository.save(categoria);
     }
 
