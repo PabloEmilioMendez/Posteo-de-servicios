@@ -32,7 +32,7 @@ public class CategoriaService {
     public List<Categoria> findAllActive(){
         return categoriaRepository.findAllByActivoTrue();
     }
-
+    //READ ID
     @Transactional
     public Categoria findById(Long id){
         return categoriaRepository.findById(id)

@@ -19,6 +19,7 @@ public class Servicio extends BaseEntity {
     @Size(max = 100)
     private String nombre;
 
+    @NotBlank
     @Size(max = 250)
     private String descripcion;
 }
