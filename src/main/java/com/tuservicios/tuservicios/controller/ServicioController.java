@@ -40,4 +40,15 @@ public class ServicioController {
     public Servicio findById(@PathVariable Long id){
         return servicioService.findById(id);
     }
+
+    //UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<Servicio> updateServicios(@PathVariable Long id, @Valid @RequestBody ServicioRequest servicioRequest){
+
+        Servicio existServicio = servicioService.findById(id);
+        Servicio updateServicio = servicioService.saveServicio(servicioRequest, existServicio);
+
+        return new ResponseEntity<>(updateServicio, HttpStatus.CREATED);
+
+    }
 }
