@@ -39,5 +39,11 @@ public class ServicioService {
         return servicioRepository.findById(id).filter(Servicio :: getActivo)
                         .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Servicio con id no encontrado: "+ id));
     }
-
+    //DELETE Servicio
+    @Transactional
+    public void deleteServicio(Long id){
+        Servicio servicio = servicioRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Servicio no encontrado con ID: " +id));
+        servicio.setActivo(false);
+        servicioRepository.save(servicio);
+    }
 }

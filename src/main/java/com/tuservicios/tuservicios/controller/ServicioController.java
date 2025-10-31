@@ -2,6 +2,7 @@ package com.tuservicios.tuservicios.controller;
 
 import com.tuservicios.tuservicios.model.Servicio;
 import com.tuservicios.tuservicios.payload.request.ServicioRequest;
+import com.tuservicios.tuservicios.repository.ServicioRepository;
 import com.tuservicios.tuservicios.service.ServicioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,15 @@ public class ServicioController {
     //UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<Servicio> updateServicios(@PathVariable Long id, @Valid @RequestBody ServicioRequest servicioRequest){
-
         Servicio existServicio = servicioService.findById(id);
         Servicio updateServicio = servicioService.saveServicio(servicioRequest, existServicio);
-
         return new ResponseEntity<>(updateServicio, HttpStatus.CREATED);
+    }
 
+    //DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteServicio(@PathVariable Long id){
+        servicioService.deleteServicio(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
