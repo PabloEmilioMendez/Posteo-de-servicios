@@ -46,4 +46,14 @@ public class ServicioService {
         servicio.setActivo(false);
         servicioRepository.save(servicio);
     }
+
+    //ACTIVATE SERVICE
+    @Transactional
+    public void activateServicio(Long id){
+        Servicio servicio = servicioRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Servicio no encontrado con ID: " + id));
+        servicio.setActivo(true);
+        servicioRepository.save(servicio);
+    }
+
 }

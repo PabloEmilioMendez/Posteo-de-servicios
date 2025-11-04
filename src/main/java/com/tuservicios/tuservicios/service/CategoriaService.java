@@ -49,10 +49,11 @@ public class CategoriaService {
                 categoriaRepository.save(categoria);
     }
 
-    //Activar categori
+    //ACTIVATE CATEGORY
     @Transactional
     public void activeCategorie(Long id){
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Categoria no encontrada con ID: " + id));
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Categoria no encontrada con ID: " + id));
         categoria.setActivo(true);
         categoriaRepository.save(categoria);
     }

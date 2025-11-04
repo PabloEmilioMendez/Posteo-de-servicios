@@ -55,7 +55,7 @@ public class CategoriaController {
         categoriaService.deleteCategoria(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //
+    //ACTIVATE CATEGORY
     @PutMapping("/active/{id}")
     public ResponseEntity<HttpStatus> activeCategorie(@PathVariable Long id){
         categoriaService.activeCategorie(id);

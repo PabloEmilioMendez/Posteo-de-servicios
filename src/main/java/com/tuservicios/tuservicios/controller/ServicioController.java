@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/servicios")
@@ -52,8 +54,16 @@ public class ServicioController {
 
     //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteServicio(@PathVariable Long id){
+    public ResponseEntity<Map<String, String>> deleteServicio(@PathVariable Long id){
         servicioService.deleteServicio(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "El servicio se elimino correctamente.");
+        return  ResponseEntity.ok(response);
+    }
+    //ACTIVATE SERVICE
+    @PutMapping("/active/{id}")
+    public ResponseEntity<HttpStatus> activateServicio(@PathVariable Long id){
+        servicioService.activateServicio(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
