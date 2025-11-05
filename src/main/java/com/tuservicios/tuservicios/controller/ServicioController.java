@@ -62,8 +62,11 @@ public class ServicioController {
     }
     //ACTIVATE SERVICE
     @PutMapping("/active/{id}")
-    public ResponseEntity<HttpStatus> activateServicio(@PathVariable Long id){
-        servicioService.activateServicio(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Map<String, Object>> activateServicio(@PathVariable Long id){
+        Servicio servicio = servicioService.activateServicio(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message","El servicio se activo correctamente.");
+        response.put("servicio", servicio);
+        return  ResponseEntity.ok(response);
     }
 }

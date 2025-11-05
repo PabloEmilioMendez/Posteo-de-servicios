@@ -49,11 +49,11 @@ public class ServicioService {
 
     //ACTIVATE SERVICE
     @Transactional
-    public void activateServicio(Long id){
+    public Servicio activateServicio(Long id){
         Servicio servicio = servicioRepository.findById(id)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Servicio no encontrado con ID: " + id));
         servicio.setActivo(true);
-        servicioRepository.save(servicio);
+        return servicioRepository.save(servicio);
     }
 
 }
