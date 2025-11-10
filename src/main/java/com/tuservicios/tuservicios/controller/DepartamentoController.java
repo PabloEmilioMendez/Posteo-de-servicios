@@ -21,15 +21,18 @@ public class DepartamentoController {
     @Autowired
     private PaisRepository paisRepository;
 
+    @PostMapping
     public ResponseEntity<Departemento> createDepartamento(@Valid @RequestBody Departemento departemento){
         Departemento newDepartamento = departamentoRepository.save(departemento);
         return  new ResponseEntity<>(newDepartamento, HttpStatus.CREATED);
     }
     //GET ALL Departamento
+    @GetMapping
     public List<Departemento> getAllDepartamento(){
         return departamentoRepository.findAll();
     }
     //GET Departamento By ID
+    @GetMapping("/pais/{paisId}")
     public  List<Departemento> getDepartamentosById(@PathVariable Long paisId){
         return departamentoRepository.findByPaisId(paisId);
     }
