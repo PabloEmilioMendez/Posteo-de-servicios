@@ -1,5 +1,6 @@
 package com.tuservicios.tuservicios.controller;
 
+import com.tuservicios.tuservicios.model.Ciudad;
 import com.tuservicios.tuservicios.model.Departemento;
 import com.tuservicios.tuservicios.repository.DepartamentoRepository;
 import com.tuservicios.tuservicios.repository.PaisRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,5 +37,10 @@ public class DepartamentoController {
     @GetMapping("/pais/{paisId}")
     public  List<Departemento> getDepartamentosById(@PathVariable Long paisId){
         return departamentoRepository.findByPaisId(paisId);
+    }
+
+    @GetMapping("/{id}")
+    public Departemento findById(@PathVariable Long id){
+        return departamentoRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Departamentos no encontrado con ID: " + id));
     }
 }
