@@ -7,4 +7,6 @@ import lombok.Data;
 public class GeoDataRequest {
     @NotBlank
     private  String filePath;
+
+
 }
